@@ -1,0 +1,47 @@
+<!-- /Templates/inde.html-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Processor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Text Processor</h1>
+    
+    <!-- Upload Form -->
+    <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="files[]" multiple>
+        <button type="submit">Upload Files</button>
+    </form>
+    
+    <!-- Text Display -->
+    <div id="text-display">
+        <h3>Text 1:</h3>
+        <p>{{ text1|safe }}</p>
+        
+        <h3>Text 2:</h3>
+        <p>{{ text2|safe }}</p>
+    </div>
+
+    <!-- Search -->
+    <form action="{{ url_for('search_pattern') }}" method="POST">
+        <input type="text" name="pattern" placeholder="Search pattern...">
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Similarity -->
+    <form action="{{ url_for('similarity') }}" method="POST">
+        <button type="submit">Find Similarity</button>
+    </form>
+
+    <!-- Palindrome -->
+    <form action="{{ url_for('palindrome') }}" method="POST">
+        <button type="submit">Find Palindrome</button>
+    </form>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
