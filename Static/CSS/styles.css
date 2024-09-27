@@ -1,6 +1,6 @@
 /* /Static/CSS/styles.cs  */
 
-/* Example styles */
+
 .highlight-yellow {
     background-color: yellow;
 }
@@ -11,4 +11,24 @@
 
 .highlight-green {
     background-color: green;
+}
+
+
+#suggestion-box {
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    background-color: white;
+    z-index: 1000;
+    width: 100%;
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: #f0f0f0;
 }

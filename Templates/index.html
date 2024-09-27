@@ -1,5 +1,3 @@
-<!-- /Templates/inde.html-->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +11,16 @@
     
     <!-- Upload Form -->
     <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
-        <input type="file" name="files[]" multiple>
+        <label for="file1">Choose File for Text 1:</label>
+        <input type="file" id="file1" name="file1">
+        
+        <br><br>
+
+        <label for="file2">Choose File for Text 2:</label>
+        <input type="file" id="file2" name="file2">
+        
+        <br><br>
+
         <button type="submit">Upload Files</button>
     </form>
     
@@ -26,10 +33,21 @@
         <p>{{ text2|safe }}</p>
     </div>
 
-    <!-- Search -->
+    <!-- Search Pattern -->
     <form action="{{ url_for('search_pattern') }}" method="POST">
         <input type="text" name="pattern" placeholder="Search pattern...">
-        <button type="submit">Search</button>
+        <!-- Add hidden fields to preserve the content of Text1 and Text2 -->
+        <input type="hidden" name="text" value="{{ text1 }}">
+        <input type="hidden" name="text_id" value="Text1">
+        <button type="submit">Search in Text 1</button>
+    </form>
+
+    <form action="{{ url_for('search_pattern') }}" method="POST">
+        <input type="text" name="pattern" placeholder="Search pattern...">
+        <!-- Add hidden fields to preserve the content of Text1 and Text2 -->
+        <input type="hidden" name="text" value="{{ text2 }}">
+        <input type="hidden" name="text_id" value="Text2">
+        <button type="submit">Search in Text 2</button>
     </form>
 
     <!-- Similarity -->
