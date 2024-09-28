@@ -5,6 +5,7 @@ from palindromo import longest_palindrome
 from z import find_substring
 from lcs import find_lcs
 from trie import Trie, load_text_into_trie
+import re
 
 app = Flask(__name__)
 
@@ -46,16 +47,39 @@ def upload_file():
     return render_template('index.html', text1=text1, text2=text2)
 
 # Search pattern using Z-algorithm
+import re
+
 @app.route('/search', methods=['POST'])
 def search_pattern():
     pattern = request.form['pattern']
-    text = request.form['text']  # Now we receive the text content from the form
+    text = request.form['text']  # Retrieve the text that was uploaded
+    text_id = request.form['text_id']  # Identify which text is being searched
 
-    # Perform the search using the pattern and the provided text
+    # Remove any existing <span class="highlight"> tags
+    text = re.sub(r'<span class="highlight">(.*?)</span>', r'\1', text)
+
+    # Find the position of the pattern
     position = find_substring(text, pattern)
-    
-    # Render the template with the search result (you can add more info like position)
-    return render_template('index.html', text=text, pattern=pattern, position=position)
+
+    # If the pattern is found, wrap it with a <span> tag for highlighting
+    if position != -1:
+        highlighted_text = (text[:position] +
+                            f'<span class="highlight">{pattern}</span>' +
+                            text[position+len(pattern):])
+    else:
+        highlighted_text = text
+
+    # Keep the original texts and only highlight for this request
+    text1 = highlighted_text if text_id == "Text1" else request.form.get('text1', '')
+    text2 = highlighted_text if text_id == "Text2" else request.form.get('text2', '')
+
+    # Render the template with the search result and preserved text content
+    return render_template('index.html', text1=text1, text2=text2, 
+                           pattern=pattern, position=position)
+
+
+
+
 
 
 # Longest Common Substring (LCS)

@@ -33,20 +33,23 @@
         <p>{{ text2|safe }}</p>
     </div>
 
-    <!-- Search Pattern -->
+    <!-- Search Pattern in Text 1 -->
     <form action="{{ url_for('search_pattern') }}" method="POST">
         <input type="text" name="pattern" placeholder="Search pattern...">
         <!-- Add hidden fields to preserve the content of Text1 and Text2 -->
         <input type="hidden" name="text" value="{{ text1 }}">
         <input type="hidden" name="text_id" value="Text1">
+        <input type="hidden" name="text2" value="{{ text2 }}">  <!-- Preserve Text2 -->
         <button type="submit">Search in Text 1</button>
     </form>
 
+    <!-- Search Pattern in Text 2 -->
     <form action="{{ url_for('search_pattern') }}" method="POST">
         <input type="text" name="pattern" placeholder="Search pattern...">
         <!-- Add hidden fields to preserve the content of Text1 and Text2 -->
         <input type="hidden" name="text" value="{{ text2 }}">
         <input type="hidden" name="text_id" value="Text2">
+        <input type="hidden" name="text1" value="{{ text1 }}">  <!-- Preserve Text1 -->
         <button type="submit">Search in Text 2</button>
     </form>
 
