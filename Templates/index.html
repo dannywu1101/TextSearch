@@ -53,8 +53,11 @@
         <button type="submit">Search in Text 2</button>
     </form>
 
-    <!-- Similarity -->
+    <!-- Similarity Form -->
     <form action="{{ url_for('similarity') }}" method="POST">
+        <!-- Ensure text1 and text2 are passed when comparing similarity -->
+        <input type="hidden" name="text1" value="{{ text1 }}">
+        <input type="hidden" name="text2" value="{{ text2 }}">
         <button type="submit">Find Similarity</button>
     </form>
 

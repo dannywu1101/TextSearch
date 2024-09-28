@@ -78,18 +78,30 @@ def search_pattern():
                            pattern=pattern, position=position)
 
 
-
-
-
-
 # Longest Common Substring (LCS)
 @app.route('/similarity', methods=['POST'])
 def similarity():
-    text1 = request.form['text1']
-    text2 = request.form['text2']
-    
-    lcs = find_lcs(text1, text2)
-    return render_template('index.html', text1=text1, text2=text2, lcs=lcs)
+    text1 = request.form.get('text1', '')  # Get Text1 from the form
+    text2 = request.form.get('text2', '')  # Get Text2 from the form
+
+    # Ensure both texts are available
+    if not text1 or not text2:
+        return "Error: Both Text1 and Text2 are required.", 400
+
+    # Find the longest common substrings (LCS)
+    lcs_result = find_lcs(text1, text2)
+
+    # Highlight all LCS occurrences in both texts
+    highlighted_text1 = text1
+    highlighted_text2 = text2
+    for lcs in lcs_result:
+        highlighted_text1 = highlighted_text1.replace(lcs, f'<span class="highlight">{lcs}</span>')
+        highlighted_text2 = highlighted_text2.replace(lcs, f'<span class="highlight">{lcs}</span>')
+
+    # Render the template with the highlighted LCS
+    return render_template('index.html', text1=highlighted_text1, text2=highlighted_text2, lcs=lcs_result)
+
+
 
 # Longest Palindrome
 @app.route('/palindrome', methods=['POST'])
