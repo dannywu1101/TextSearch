@@ -83,69 +83,61 @@ def search_pattern():
 # Longest Common Substring (LCS)
 @app.route('/similarity', methods=['POST'])
 def similarity():
-    text1 = request.form.get('text1', '')  # Get Text1 from the form
-    text2 = request.form.get('text2', '')  # Get Text2 from the form
+    text1 = request.form.get('text1', '')
+    text2 = request.form.get('text2', '')
 
-    # Ensure both texts are available
-    if not text1 or not text2:
-        return "Error: Both Text1 and Text2 are required.", 400
+    # Call the LCS function to find the longest common substring(s)
+    lcs_results = find_lcs(text1, text2)
 
-    # Find the longest common substrings (LCS)
-    lcs_result = find_lcs(text1, text2)
-
-    # Highlight all LCS occurrences in both texts
+    # Highlight all longest common substrings
     highlighted_text1 = text1
     highlighted_text2 = text2
-    for lcs in lcs_result:
-        highlighted_text1 = highlighted_text1.replace(lcs, f'<span class="highlight">{lcs}</span>')
-        highlighted_text2 = highlighted_text2.replace(lcs, f'<span class="highlight">{lcs}</span>')
 
-    # Render the template with the highlighted LCS
-    return render_template('index.html', text1=highlighted_text1, text2=highlighted_text2, lcs=lcs_result)
+    for lcs_result in lcs_results:
+        # Replace each occurrence of the LCS in both texts with a highlighted version
+        highlighted_text1 = highlighted_text1.replace(lcs_result, f'<span class="highlight-blue">{lcs_result}</span>')
+        highlighted_text2 = highlighted_text2.replace(lcs_result, f'<span class="highlight-blue">{lcs_result}</span>')
+
+    return render_template('index.html', text1=highlighted_text1, text2=highlighted_text2)
+
 
 
 # Longest Palindrome
 @app.route('/palindrome', methods=['POST'])
 def palindrome():
-    # Check which text is selected
-    text_id = request.form['text_id']
+    text_id = request.form.get('text_id')
+    if text_id == "Text1":
+        text = request.form.get('text1', '')
+    else:
+        text = request.form.get('text2', '')
+
+    print(f"Text for Palindrome Search: {text}")  # Print the input text
+
+    # Call the function to find the longest palindrome in the text
+    found_palindrome = longest_palindrome(text)
     
-    # Get the appropriate text based on the selection
+    print(f"Found Palindrome: {found_palindrome}")  # Print the output palindrome
+
+    # Highlight the palindrome
     if text_id == "Text1":
-        text = request.form['text1']
+        highlighted_text1 = text.replace(found_palindrome, f'<span class="highlight">{found_palindrome}</span>')
+        return render_template('index.html', text1=highlighted_text1, text2=request.form.get('text2', ''))
     else:
-        text = request.form['text2']
+        highlighted_text2 = text.replace(found_palindrome, f'<span class="highlight">{found_palindrome}</span>')
+        return render_template('index.html', text1=request.form.get('text1', ''), text2=highlighted_text2)
 
-    # Ensure text is provided
-    if not text:
-        return "Error: No text provided for palindrome search.", 400
 
-    # Find the longest palindrome using your Manacher's algorithm or any other method
-    longest_pal = longest_palindrome(text)
 
-    # Highlight the found palindrome in the text
-    highlighted_text = text.replace(longest_pal, f'<span class="highlight-green">{longest_pal}</span>')
 
-    # Render the template with the highlighted palindrome
-    if text_id == "Text1":
-        return render_template('index.html', text1=highlighted_text, text2=request.form['text2'], palindrome=longest_pal)
-    else:
-        return render_template('index.html', text1=request.form['text1'], text2=highlighted_text, palindrome=longest_pal)
-
-# Clear highlights
+# Clear All Highlights
 @app.route('/clear', methods=['POST'])
 def clear():
-    # Get the current text1 and text2 from the form
+    # Retrieve text1 and text2 without any highlights
     text1 = request.form.get('text1', '')
     text2 = request.form.get('text2', '')
-
-    # Remove all highlight tags from the text
-    clean_text1 = re.sub(r'<span class="highlight.*?">(.*?)</span>', r'\1', text1)
-    clean_text2 = re.sub(r'<span class="highlight.*?">(.*?)</span>', r'\1', text2)
-
-    # Re-render the template with the cleaned text (no highlights)
-    return render_template('index.html', text1=clean_text1, text2=clean_text2)
-
+    
+    # Render the page with the original text, clearing any highlights
+    return render_template('index.html', text1=text1, text2=text2)
 
 # Autocomplete logic
 @app.route('/autocomplete', methods=['POST'])

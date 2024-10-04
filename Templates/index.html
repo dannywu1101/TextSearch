@@ -10,54 +10,39 @@
 </head>
 <body>
     <h1>Text Processor</h1>
-    
+
     <!-- Upload Form -->
     <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
         <label for="file1">Choose File for Text 1:</label>
         <input type="file" id="file1" name="file1">
-        
         <br><br>
-
         <label for="file2">Choose File for Text 2:</label>
         <input type="file" id="file2" name="file2">
-        
         <br><br>
-
         <button type="submit">Upload Files</button>
     </form>
-    
+
     <!-- Text Display -->
     <div id="text-display">
         <h3>Text 1:</h3>
         <p>{{ text1|safe }}</p>
-        
         <h3>Text 2:</h3>
         <p>{{ text2|safe }}</p>
     </div>
 
-    <!-- Search Pattern in Text 1 -->
-    <form action="{{ url_for('search_pattern') }}" method="POST">
-        <input type="text" name="pattern" placeholder="Search pattern...">
-        <!-- Add hidden fields to preserve the content of Text1 and Text2 -->
-        <input type="hidden" name="text" value="{{ text1 }}">
-        <input type="hidden" name="text_id" value="Text1">
-        <input type="hidden" name="text2" value="{{ text2 }}">  <!-- Preserve Text2 -->
-        <button type="submit">Search in Text 1</button>
-    </form>
-
-    <!-- Search Pattern in Text 2 -->
-    <form action="{{ url_for('search_pattern') }}" method="POST">
-        <input type="text" name="pattern" placeholder="Search pattern...">
-        <!-- Add hidden fields to preserve the content of Text1 and Text2 -->
-        <input type="hidden" name="text" value="{{ text2 }}">
-        <input type="hidden" name="text_id" value="Text2">
-        <input type="hidden" name="text1" value="{{ text1 }}">  <!-- Preserve Text1 -->
-        <button type="submit">Search in Text 2</button>
-    </form>
+    <!-- Case sensitivity toggle -->
+    <label for="case-sensitive">Case Sensitive</label>
+    <input type="checkbox" id="case-sensitive">
+    
+    <!-- Search Pattern in Real-Time -->
+    <input type="text" name="pattern" placeholder="Type to search...">
+    
+    <!-- Navigation for matches -->
+    <button id="prev-match">Previous</button>
+    <button id="next-match">Next</button>
 
     <!-- Similarity Form -->
     <form action="{{ url_for('similarity') }}" method="POST">
-        <!-- Ensure text1 and text2 are passed when comparing similarity -->
         <input type="hidden" name="text1" value="{{ text1 }}">
         <input type="hidden" name="text2" value="{{ text2 }}">
         <button type="submit">Find Similarity</button>
@@ -65,7 +50,6 @@
 
     <!-- Palindrome -->
     <form action="{{ url_for('palindrome') }}" method="POST">
-        <!-- Add hidden fields to pass the content of Text1 or Text2 -->
         <input type="hidden" name="text1" value="{{ text1 }}">
         <input type="hidden" name="text2" value="{{ text2 }}">
         <label for="text_id">Choose text to search for palindrome:</label>
@@ -78,10 +62,9 @@
 
     <!-- Clear All Button -->
     <form action="{{ url_for('clear') }}" method="POST">
-        <!-- Pass the current text1 and text2 to the backend -->
         <input type="hidden" name="text1" value="{{ text1 }}">
         <input type="hidden" name="text2" value="{{ text2 }}">
-        <button type="submit">Clear All</button>
+        <button id="clear-all-btn" type="submit">Clear All</button>
     </form>
 
 

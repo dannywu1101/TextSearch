@@ -1,23 +1,10 @@
-/* /Static/CSS/styles.cs  */
-
-
-.highlight-yellow {
-    background-color: yellow;
-}
-
 .highlight {
     background-color: yellow;
 }
 
 .highlight-blue {
-    background-color: blue;
+    background-color: lightblue;
 }
-
-.highlight-green {
-    background-color: green;
-}
-
-
 
 #suggestion-box {
     border: 1px solid #ccc;
@@ -36,4 +23,16 @@
 
 .suggestion-item:hover {
     background-color: #f0f0f0;
+}
+
+#prev-match, #next-match {
+    margin: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+}
+
+#prev-match:hover, #next-match:hover {
+    background-color: #ddd;
 }
