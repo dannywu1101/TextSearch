@@ -1,3 +1,5 @@
+<!-- /Templates/index.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,8 +65,25 @@
 
     <!-- Palindrome -->
     <form action="{{ url_for('palindrome') }}" method="POST">
+        <!-- Add hidden fields to pass the content of Text1 or Text2 -->
+        <input type="hidden" name="text1" value="{{ text1 }}">
+        <input type="hidden" name="text2" value="{{ text2 }}">
+        <label for="text_id">Choose text to search for palindrome:</label>
+        <select name="text_id">
+            <option value="Text1">Text 1</option>
+            <option value="Text2">Text 2</option>
+        </select>
         <button type="submit">Find Palindrome</button>
     </form>
+
+    <!-- Clear All Button -->
+    <form action="{{ url_for('clear') }}" method="POST">
+        <!-- Pass the current text1 and text2 to the backend -->
+        <input type="hidden" name="text1" value="{{ text1 }}">
+        <input type="hidden" name="text2" value="{{ text2 }}">
+        <button type="submit">Clear All</button>
+    </form>
+
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>

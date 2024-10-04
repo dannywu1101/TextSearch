@@ -1,3 +1,5 @@
+# /app.py
+
 from flask import Flask, render_template, request, jsonify
 import os
 from werkzeug.utils import secure_filename
@@ -102,14 +104,48 @@ def similarity():
     return render_template('index.html', text1=highlighted_text1, text2=highlighted_text2, lcs=lcs_result)
 
 
-
 # Longest Palindrome
 @app.route('/palindrome', methods=['POST'])
 def palindrome():
-    text = request.form['text']
+    # Check which text is selected
+    text_id = request.form['text_id']
     
+    # Get the appropriate text based on the selection
+    if text_id == "Text1":
+        text = request.form['text1']
+    else:
+        text = request.form['text2']
+
+    # Ensure text is provided
+    if not text:
+        return "Error: No text provided for palindrome search.", 400
+
+    # Find the longest palindrome using your Manacher's algorithm or any other method
     longest_pal = longest_palindrome(text)
-    return render_template('index.html', text=text, palindrome=longest_pal)
+
+    # Highlight the found palindrome in the text
+    highlighted_text = text.replace(longest_pal, f'<span class="highlight-green">{longest_pal}</span>')
+
+    # Render the template with the highlighted palindrome
+    if text_id == "Text1":
+        return render_template('index.html', text1=highlighted_text, text2=request.form['text2'], palindrome=longest_pal)
+    else:
+        return render_template('index.html', text1=request.form['text1'], text2=highlighted_text, palindrome=longest_pal)
+
+# Clear highlights
+@app.route('/clear', methods=['POST'])
+def clear():
+    # Get the current text1 and text2 from the form
+    text1 = request.form.get('text1', '')
+    text2 = request.form.get('text2', '')
+
+    # Remove all highlight tags from the text
+    clean_text1 = re.sub(r'<span class="highlight.*?">(.*?)</span>', r'\1', text1)
+    clean_text2 = re.sub(r'<span class="highlight.*?">(.*?)</span>', r'\1', text2)
+
+    # Re-render the template with the cleaned text (no highlights)
+    return render_template('index.html', text1=clean_text1, text2=clean_text2)
+
 
 # Autocomplete logic
 @app.route('/autocomplete', methods=['POST'])
