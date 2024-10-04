@@ -6,6 +6,10 @@
     background-color: lightblue;
 }
 
+.highlight-red {
+    background-color: lightcoral;
+}
+
 #suggestion-box {
     border: 1px solid #ccc;
     max-height: 150px;

@@ -49,15 +49,11 @@
     </form>
 
     <!-- Palindrome -->
-    <form action="{{ url_for('palindrome') }}" method="POST">
+    <form id="find-palindrome-form" action="/palindrome" method="POST">
+        <input type="hidden" name="text_id" value="Text1" id="palindrome-text-id">
         <input type="hidden" name="text1" value="{{ text1 }}">
         <input type="hidden" name="text2" value="{{ text2 }}">
-        <label for="text_id">Choose text to search for palindrome:</label>
-        <select name="text_id">
-            <option value="Text1">Text 1</option>
-            <option value="Text2">Text 2</option>
-        </select>
-        <button type="submit">Find Palindrome</button>
+        <button type="submit" id="find-palindrome-btn">Find Palindrome</button>
     </form>
 
     <!-- Clear All Button -->

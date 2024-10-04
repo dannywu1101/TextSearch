@@ -83,48 +83,55 @@ def search_pattern():
 # Longest Common Substring (LCS)
 @app.route('/similarity', methods=['POST'])
 def similarity():
-    text1 = request.form.get('text1', '')
-    text2 = request.form.get('text2', '')
+    text1 = request.form.get('text1', '')  # Get Text1 from the form
+    text2 = request.form.get('text2', '')  # Get Text2 from the form
 
-    # Call the LCS function to find the longest common substring(s)
-    lcs_results = find_lcs(text1, text2)
+    # Ensure both texts are available
+    if not text1 or not text2:
+        return "Error: Both Text1 and Text2 are required.", 400
 
-    # Highlight all longest common substrings
+    # Find the longest common substrings (LCS)
+    lcs_result = find_lcs(text1, text2)
+
+    # Highlight all LCS occurrences in both texts with the "highlight-blue" class
     highlighted_text1 = text1
     highlighted_text2 = text2
+    for lcs in lcs_result:
+        highlighted_text1 = highlighted_text1.replace(lcs, f'<span class="highlight-blue">{lcs}</span>')
+        highlighted_text2 = highlighted_text2.replace(lcs, f'<span class="highlight-blue">{lcs}</span>')
 
-    for lcs_result in lcs_results:
-        # Replace each occurrence of the LCS in both texts with a highlighted version
-        highlighted_text1 = highlighted_text1.replace(lcs_result, f'<span class="highlight-blue">{lcs_result}</span>')
-        highlighted_text2 = highlighted_text2.replace(lcs_result, f'<span class="highlight-blue">{lcs_result}</span>')
-
-    return render_template('index.html', text1=highlighted_text1, text2=highlighted_text2)
-
+    # Render the template with the highlighted LCS
+    return render_template('index.html', text1=highlighted_text1, text2=highlighted_text2, lcs=lcs_result)
 
 
 # Longest Palindrome
 @app.route('/palindrome', methods=['POST'])
 def palindrome():
-    text_id = request.form.get('text_id')
+    # Check which text is selected
+    text_id = request.form['text_id']
+
+    # Get the appropriate text based on the selection
     if text_id == "Text1":
-        text = request.form.get('text1', '')
+        text = request.form['text1']
     else:
-        text = request.form.get('text2', '')
+        text = request.form['text2']
 
-    print(f"Text for Palindrome Search: {text}")  # Print the input text
+    # Ensure text is provided
+    if not text:
+        return "Error: No text provided for palindrome search.", 400
 
-    # Call the function to find the longest palindrome in the text
-    found_palindrome = longest_palindrome(text)
-    
-    print(f"Found Palindrome: {found_palindrome}")  # Print the output palindrome
+    # Find the longest palindrome using your Manacher's algorithm
+    longest_pal = longest_palindrome(text)
 
-    # Highlight the palindrome
+    # Highlight the found palindrome in the text with the "highlight-yellow" class
+    highlighted_text = text.replace(longest_pal, f'<span class="highlight-red">{longest_pal}</span>')
+
+    # Render the template with the highlighted palindrome
     if text_id == "Text1":
-        highlighted_text1 = text.replace(found_palindrome, f'<span class="highlight">{found_palindrome}</span>')
-        return render_template('index.html', text1=highlighted_text1, text2=request.form.get('text2', ''))
+        return render_template('index.html', text1=highlighted_text, text2=request.form['text2'], palindrome=longest_pal)
     else:
-        highlighted_text2 = text.replace(found_palindrome, f'<span class="highlight">{found_palindrome}</span>')
-        return render_template('index.html', text1=request.form.get('text1', ''), text2=highlighted_text2)
+        return render_template('index.html', text1=request.form['text1'], text2=highlighted_text, palindrome=longest_pal)
+
 
 
 
