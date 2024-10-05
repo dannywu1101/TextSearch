@@ -2,13 +2,14 @@
     background-color: yellow;
 }
 
-.highlight-blue {
-    background-color: lightblue;
+.highlight-green {
+    background-color: lightgreen; /* For highlighting palindromes */
 }
 
-.highlight-red {
-    background-color: lightcoral;
+.highlight-blue {
+    background-color: lightblue; /* For highlighting similarities */
 }
+
 
 #suggestion-box {
     border: 1px solid #ccc;

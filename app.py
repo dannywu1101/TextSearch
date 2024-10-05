@@ -49,38 +49,34 @@ def upload_file():
     return render_template('index.html', text1=text1, text2=text2)
 
 # Search pattern using Z-algorithm
-import re
-
 @app.route('/search', methods=['POST'])
 def search_pattern():
     pattern = request.form['pattern']
-    text = request.form['text']  # Retrieve the text that was uploaded
-    text_id = request.form['text_id']  # Identify which text is being searched
+    text1 = request.form['text1']  # Retrieve Text1 that was uploaded
+    text2 = request.form['text2']  # Retrieve Text2 that was uploaded
 
-    # Remove any existing <span class="highlight"> tags
-    text = re.sub(r'<span class="highlight">(.*?)</span>', r'\1', text)
+    # Remove any existing <span class="highlight"> tags from both texts
+    text1 = re.sub(r'<span class="highlight">(.*?)</span>', r'\1', text1)
+    text2 = re.sub(r'<span class="highlight">(.*?)</span>', r'\1', text2)
 
-    # Find the position of the pattern
-    position = find_substring(text, pattern)
+    # Define a helper function to highlight all occurrences of the pattern
+    def highlight_all_occurrences(text, pattern):
+        return re.sub(f'({re.escape(pattern)})', r'<span class="highlight">\1</span>', text)
 
-    # If the pattern is found, wrap it with a <span> tag for highlighting
-    if position != -1:
-        highlighted_text = (text[:position] +
-                            f'<span class="highlight">{pattern}</span>' +
-                            text[position+len(pattern):])
-    else:
-        highlighted_text = text
+    # Highlight the pattern in both Text1 and Text2
+    highlighted_text1 = highlight_all_occurrences(text1, pattern)
+    highlighted_text2 = highlight_all_occurrences(text2, pattern)
 
-    # Keep the original texts and only highlight for this request
-    text1 = highlighted_text if text_id == "Text1" else request.form.get('text1', '')
-    text2 = highlighted_text if text_id == "Text2" else request.form.get('text2', '')
-
-    # Render the template with the search result and preserved text content
-    return render_template('index.html', text1=text1, text2=text2, 
-                           pattern=pattern, position=position)
+    # Render the template with the updated text content
+    return render_template('index.html', text1=highlighted_text1, text2=highlighted_text2, pattern=pattern)
 
 
-# Longest Common Substring (LCS)
+
+
+
+
+
+# Find LCS
 @app.route('/similarity', methods=['POST'])
 def similarity():
     text1 = request.form.get('text1', '')  # Get Text1 from the form
@@ -90,6 +86,10 @@ def similarity():
     if not text1 or not text2:
         return "Error: Both Text1 and Text2 are required.", 400
 
+    # Clear any existing palindrome highlights before applying similarity highlights
+    text1 = re.sub(r'<span class="highlight-green">(.*?)</span>', r'\1', text1)
+    text2 = re.sub(r'<span class="highlight-green">(.*?)</span>', r'\1', text2)
+
     # Find the longest common substrings (LCS)
     lcs_result = find_lcs(text1, text2)
 
@@ -97,14 +97,15 @@ def similarity():
     highlighted_text1 = text1
     highlighted_text2 = text2
     for lcs in lcs_result:
-        highlighted_text1 = highlighted_text1.replace(lcs, f'<span class="highlight-blue">{lcs}</span>')
-        highlighted_text2 = highlighted_text2.replace(lcs, f'<span class="highlight-blue">{lcs}</span>')
+        highlighted_text1 = re.sub(f'({lcs})', r'<span class="highlight-blue">\1</span>', highlighted_text1)
+        highlighted_text2 = re.sub(f'({lcs})', r'<span class="highlight-blue">\1</span>', highlighted_text2)
 
     # Render the template with the highlighted LCS
     return render_template('index.html', text1=highlighted_text1, text2=highlighted_text2, lcs=lcs_result)
 
 
-# Longest Palindrome
+
+# Find Palindrome
 @app.route('/palindrome', methods=['POST'])
 def palindrome():
     # Check which text is selected
@@ -113,27 +114,39 @@ def palindrome():
     # Get the appropriate text based on the selection
     if text_id == "Text1":
         text = request.form['text1']
+        other_text = request.form['text2']  # Get the other text without modification
     else:
         text = request.form['text2']
+        other_text = request.form['text1']  # Get the other text without modification
 
     # Ensure text is provided
     if not text:
         return "Error: No text provided for palindrome search.", 400
 
-    # Find the longest palindrome using your Manacher's algorithm
+    # Clear any existing highlights from both texts
+    text = re.sub(r'<span class="highlight.*?">(.*?)<\/span>', r'\1', text)
+    other_text = re.sub(r'<span class="highlight.*?">(.*?)<\/span>', r'\1', other_text)
+
+    # Debugging: Print the cleaned text to check if it's correct
+    print(f"Cleaned text for palindrome search in {text_id}: {text}")
+
+    # Find the longest palindrome using Manacher's algorithm
     longest_pal = longest_palindrome(text)
 
-    # Highlight the found palindrome in the text with the "highlight-yellow" class
-    highlighted_text = text.replace(longest_pal, f'<span class="highlight-red">{longest_pal}</span>')
+    # Debugging: Print the longest palindrome found
+    print(f"Longest palindrome in {text_id}: {longest_pal}")
 
-    # Render the template with the highlighted palindrome
-    if text_id == "Text1":
-        return render_template('index.html', text1=highlighted_text, text2=request.form['text2'], palindrome=longest_pal)
+    # Highlight the found palindrome in the selected text with the "highlight-green" class
+    if longest_pal:
+        highlighted_text = text.replace(longest_pal, f'<span class="highlight-green">{longest_pal}</span>')
     else:
-        return render_template('index.html', text1=request.form['text1'], text2=highlighted_text, palindrome=longest_pal)
+        highlighted_text = text
 
-
-
+    # Render the template with the highlighted palindrome and unmodified other text
+    if text_id == "Text1":
+        return render_template('index.html', text1=highlighted_text, text2=other_text, palindrome=longest_pal)
+    else:
+        return render_template('index.html', text1=other_text, text2=highlighted_text, palindrome=longest_pal)
 
 
 # Clear All Highlights

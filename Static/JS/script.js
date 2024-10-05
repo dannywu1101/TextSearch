@@ -1,10 +1,11 @@
-// /Static/JS/script.js
+// /JS/script.js
+
 const searchInput = document.querySelector('input[name="pattern"]');
 const textDisplay1 = document.querySelector('#text-display p:nth-of-type(1)');
 const textDisplay2 = document.querySelector('#text-display p:nth-of-type(2)');
 
+let matches = [];  // Array to store all matches in both Text1 and Text2
 let currentIndex = -1;
-let matches = [];
 let originalText1 = textDisplay1.innerText;
 let originalText2 = textDisplay2.innerText;
 
@@ -23,23 +24,32 @@ searchInput.addEventListener('input', function () {
 
 // Reset the text display to the original text
 function resetTextDisplay(textElement, textId) {
-    textElement.innerHTML = textId === 'Text1' ? originalText1 : originalText2;
+    if (textId === 'Text1') {
+        textElement.innerHTML = originalText1;
+    } else {
+        textElement.innerHTML = originalText2;
+    }
 }
 
-// Clear All Highlights
+// Clear All Highlights and Reset State
 function clearAllHighlights() {
-    // Remove only the highlight spans without resetting the content
-    textDisplay1.innerHTML = textDisplay1.innerHTML.replace(/<span class="highlight.*?">(.*?)<\/span>/g, '$1');
-    textDisplay2.innerHTML = textDisplay2.innerHTML.replace(/<span class="highlight.*?">(.*?)<\/span>/g, '$1');
+    resetTextDisplay(textDisplay1, 'Text1');
+    resetTextDisplay(textDisplay2, 'Text2');
+    matches = [];
+    currentIndex = -1;
+    searchInput.value = '';  // Clear the search input if necessary
 }
 
-// Find all matches and store their positions
+// Find all matches in the given text
 function findMatches(textElement, pattern, textId) {
     const caseSensitive = document.getElementById('case-sensitive').checked;
     const regex = new RegExp(`(${pattern})`, caseSensitive ? 'g' : 'gi');
     const originalText = textId === 'Text1' ? originalText1 : originalText2;
 
-    // Reset matches array
+    // Reset currentIndex
+    currentIndex = -1;
+
+    // Search for matches
     let match;
     while ((match = regex.exec(originalText)) !== null) {
         matches.push({
@@ -50,14 +60,14 @@ function findMatches(textElement, pattern, textId) {
     }
 
     if (matches.length > 0) {
-        currentIndex = 0;  // Start with the first match
+        currentIndex = 0;
         highlightCurrentMatch();  // Highlight the first match
     } else {
-        resetTextDisplay(textElement, textId);  // No matches, reset text
+        resetTextDisplay(textElement, textId);
     }
 }
 
-// Highlight only the current match and reset the other text
+// Highlight only the current match
 function highlightCurrentMatch() {
     if (matches.length === 0 || currentIndex === -1) {
         resetTextDisplay(textDisplay1, 'Text1');
@@ -67,13 +77,13 @@ function highlightCurrentMatch() {
 
     const match = matches[currentIndex];
     const textElement = match.textId === 'Text1' ? textDisplay1 : textDisplay2;
-    const otherTextElement = match.textId === 'Text1' ? textDisplay2 : textDisplay1;
     const originalText = match.textId === 'Text1' ? originalText1 : originalText2;
 
-    // Reset the other text to remove any highlights
-    resetTextDisplay(otherTextElement, match.textId === 'Text1' ? 'Text2' : 'Text1');
+    // Reset both text areas before highlighting
+    resetTextDisplay(textDisplay1, 'Text1');
+    resetTextDisplay(textDisplay2, 'Text2');
 
-    // Now highlight the current match in the relevant text element
+    // Highlight the current match
     const beforeMatch = originalText.slice(0, match.index);
     const matchText = originalText.slice(match.index, match.index + match.length);
     const afterMatch = originalText.slice(match.index + match.length);
@@ -85,23 +95,21 @@ function highlightCurrentMatch() {
 function navigateMatches(forward = true) {
     if (matches.length === 0) return;
 
-    // Navigate through matches
     if (forward) {
-        currentIndex = (currentIndex + 1) % matches.length;
+        currentIndex = (currentIndex + 1) % matches.length;  // Move forward
     } else {
-        currentIndex = (currentIndex - 1 + matches.length) % matches.length;
+        currentIndex = (currentIndex - 1 + matches.length) % matches.length;  // Move backward
     }
 
-    // Update the highlighting
     highlightCurrentMatch();
 }
 
-// Bind buttons for next/previous navigation
+// Bind buttons for next/previous match navigation
 document.querySelector('#next-match').addEventListener('click', () => navigateMatches(true));
 document.querySelector('#prev-match').addEventListener('click', () => navigateMatches(false));
 
-// Bind Clear All Button
+// Bind Clear All button to reset all highlights
 document.querySelector('#clear-all-btn').addEventListener('click', function (e) {
-    e.preventDefault();  // Prevent the form from submitting
-    clearAllHighlights();  // Clear all highlights
+    e.preventDefault();
+    clearAllHighlights();
 });

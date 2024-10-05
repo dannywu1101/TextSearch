@@ -48,13 +48,22 @@
         <button type="submit">Find Similarity</button>
     </form>
 
-    <!-- Palindrome -->
+    <!-- Palindrome Form -->
     <form id="find-palindrome-form" action="/palindrome" method="POST">
-        <input type="hidden" name="text_id" value="Text1" id="palindrome-text-id">
+        <!-- Add hidden fields to pass the content of Text1 or Text2 -->
         <input type="hidden" name="text1" value="{{ text1 }}">
         <input type="hidden" name="text2" value="{{ text2 }}">
+
+        <!-- Radio buttons to choose which text to search for palindromes -->
+        <label for="text_id">Choose text to search for palindrome:</label>
+        <select name="text_id" id="palindrome-text-id">
+            <option value="Text1">Text 1</option>
+            <option value="Text2">Text 2</option>
+        </select>
+
         <button type="submit" id="find-palindrome-btn">Find Palindrome</button>
     </form>
+
 
     <!-- Clear All Button -->
     <form action="{{ url_for('clear') }}" method="POST">
