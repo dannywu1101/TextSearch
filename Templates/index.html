@@ -1,78 +1,97 @@
-<!-- /Templates/index.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Text Processor</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>Text Processor</h1>
+    <div class="container my-5">
+        <h1 class="text-center">Text Processor</h1>
 
-    <!-- Upload Form -->
-    <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
-        <label for="file1">Choose File for Text 1:</label>
-        <input type="file" id="file1" name="file1">
-        <br><br>
-        <label for="file2">Choose File for Text 2:</label>
-        <input type="file" id="file2" name="file2">
-        <br><br>
-        <button type="submit">Upload Files</button>
-    </form>
+        <!-- Upload Form -->
+        <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data" class="mb-4">
+            <div class="form-row justify-content-center mb-3">
+                <div class="col-auto text-center">
+                    <label for="file1" class="d-block">Choose File for Text 1:</label>
+                    <input type="file" class="form-control-file mx-auto" id="file1" name="file1">
+                </div>
+            </div>
+            <div class="form-row justify-content-center mb-3">
+                <div class="col-auto text-center">
+                    <label for="file2" class="d-block">Choose File for Text 2:</label>
+                    <input type="file" class="form-control-file mx-auto" id="file2" name="file2">
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Upload Files</button>
+            </div>
+        </form>
 
-    <!-- Text Display -->
-    <div id="text-display">
-        <h3>Text 1:</h3>
-        <p>{{ text1|safe }}</p>
-        <h3>Text 2:</h3>
-        <p>{{ text2|safe }}</p>
+        <!-- Text Display -->
+        <div class="row">
+            <div class="col-md-6">
+                <h3 class="text-center">Text 1:</h3>
+                <div class="border p-3 bg-white" style="height: 300px; overflow-y: auto;" id="text1-display">
+                    <p id="text1">{{ text1|safe }}</p>
+                </div>
+
+                <!-- Search Controls Below Text 1 -->
+                <div class="mt-3">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="case-sensitive">
+                        <label class="form-check-label" for="case-sensitive">Case Sensitive</label>
+                    </div>
+                    <input type="text" class="form-control mt-2" name="pattern" placeholder="Type to search...">
+                    <div class="btn-group mt-2" role="group">
+                        <button type="button" class="btn btn-secondary" id="prev-match">Previous</button>
+                        <button type="button" class="btn btn-secondary" id="next-match">Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h3 class="text-center">Text 2:</h3>
+                <div class="border p-3 bg-white" style="height: 300px; overflow-y: auto;" id="text2-display">
+                    <p id="text2">{{ text2|safe }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Similarity Form -->
+        <form action="{{ url_for('similarity') }}" method="POST" class="mt-4">
+            <input type="hidden" name="text1" value="{{ text1 }}">
+            <input type="hidden" name="text2" value="{{ text2 }}">
+            <button type="submit" class="btn btn-info">Find Similarity</button>
+        </form>
+
+        <!-- Palindrome Form -->
+        <form id="find-palindrome-form" action="/palindrome" method="POST" class="mt-3">
+            <input type="hidden" name="text1" value="{{ text1 }}">
+            <input type="hidden" name="text2" value="{{ text2 }}">
+            <label for="text_id">Choose text to search for palindrome:</label>
+            <select name="text_id" id="palindrome-text-id" class="form-control w-25 d-inline-block">
+                <option value="Text1">Text 1</option>
+                <option value="Text2">Text 2</option>
+            </select>
+            <button type="submit" class="btn btn-warning" id="find-palindrome-btn">Find Palindrome</button>
+        </form>
+
+        <!-- Clear All Button -->
+        <form action="{{ url_for('clear') }}" method="POST" class="mt-3">
+            <input type="hidden" name="text1" value="{{ text1 }}">
+            <input type="hidden" name="text2" value="{{ text2 }}">
+            <button id="clear-all-btn" type="submit" class="btn btn-danger">Clear All</button>
+        </form>
     </div>
 
-    <!-- Case sensitivity toggle -->
-    <label for="case-sensitive">Case Sensitive</label>
-    <input type="checkbox" id="case-sensitive">
-    
-    <!-- Search Pattern in Real-Time -->
-    <input type="text" name="pattern" placeholder="Type to search...">
-    
-    <!-- Navigation for matches -->
-    <button id="prev-match">Previous</button>
-    <button id="next-match">Next</button>
-
-    <!-- Similarity Form -->
-    <form action="{{ url_for('similarity') }}" method="POST">
-        <input type="hidden" name="text1" value="{{ text1 }}">
-        <input type="hidden" name="text2" value="{{ text2 }}">
-        <button type="submit">Find Similarity</button>
-    </form>
-
-    <!-- Palindrome Form -->
-    <form id="find-palindrome-form" action="/palindrome" method="POST">
-        <!-- Add hidden fields to pass the content of Text1 or Text2 -->
-        <input type="hidden" name="text1" value="{{ text1 }}">
-        <input type="hidden" name="text2" value="{{ text2 }}">
-
-        <!-- Radio buttons to choose which text to search for palindromes -->
-        <label for="text_id">Choose text to search for palindrome:</label>
-        <select name="text_id" id="palindrome-text-id">
-            <option value="Text1">Text 1</option>
-            <option value="Text2">Text 2</option>
-        </select>
-
-        <button type="submit" id="find-palindrome-btn">Find Palindrome</button>
-    </form>
-
-
-    <!-- Clear All Button -->
-    <form action="{{ url_for('clear') }}" method="POST">
-        <input type="hidden" name="text1" value="{{ text1 }}">
-        <input type="hidden" name="text2" value="{{ text2 }}">
-        <button id="clear-all-btn" type="submit">Clear All</button>
-    </form>
-
-
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

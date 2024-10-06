@@ -1,36 +1,32 @@
-.highlight {
-    background-color: yellow;
-}
-
-.highlight-green {
-    background-color: lightgreen; /* For highlighting palindromes */
-}
-
-.highlight-blue {
-    background-color: lightblue; /* For highlighting similarities */
-}
-
-
-#suggestion-box {
-    border: 1px solid #ccc;
-    max-height: 150px;
-    overflow-y: auto;
-    position: absolute;
-    background-color: white;
-    z-index: 1000;
-    width: 100%;
-}
-
-.suggestion-item {
-    padding: 10px;
-    cursor: pointer;
-}
-
-.suggestion-item:hover {
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
     background-color: #f0f0f0;
 }
 
-#prev-match, #next-match {
+.text-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 100%;  
+    height: 300px;
+    overflow-y: auto;  
+    background-color: #ffffff;  /* Set to white */
+    text-align: left;
+}
+
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.file-input {
+    margin-bottom: 10px;
+    font-family: Arial, sans-serif;
+}
+
+#prev-match, #next-match, #find-palindrome-btn, #clear-all-btn {
     margin: 10px;
     padding: 5px 10px;
     cursor: pointer;
@@ -38,6 +34,10 @@
     background-color: #f0f0f0;
 }
 
-#prev-match:hover, #next-match:hover {
+#prev-match:hover, #next-match:hover, #find-palindrome-btn:hover, #clear-all-btn:hover {
     background-color: #ddd;
+}
+
+input[type="file"] {
+    font-family: Arial, sans-serif;
 }
