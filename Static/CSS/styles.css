@@ -1,3 +1,17 @@
+/* /Static/CSS/styles.css */
+
+.highlight {
+    background-color: yellow;
+}
+
+.highlight-green {
+    background-color: lightgreen; /* For highlighting palindromes */
+}
+
+.highlight-blue {
+    background-color: lightblue; /* For highlighting similarities */
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;

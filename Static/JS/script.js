@@ -1,13 +1,13 @@
-// /JS/script.js
+// /Static/JS/script.js
 
 const searchInput = document.querySelector('input[name="pattern"]');
-const textDisplay1 = document.querySelector('#text1');
-const textDisplay2 = document.querySelector('#text2');
+const textDisplay1 = document.querySelector('#text1-display p');
+const textDisplay2 = document.querySelector('#text2-display p');
 
 let matches = [];  // Array to store all matches in both Text1 and Text2
 let currentIndex = -1;
-let originalText1 = textDisplay1.innerHTML;
-let originalText2 = textDisplay2.innerHTML;
+let originalText1 = textDisplay1.innerText;
+let originalText2 = textDisplay2.innerText;
 
 // Real-time search listener
 searchInput.addEventListener('input', function () {
