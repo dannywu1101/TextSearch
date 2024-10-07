@@ -63,12 +63,15 @@
             </div>
         </div>
 
+        {% if text1 and text2 %}
         <!-- Similarity Form -->
         <form action="{{ url_for('similarity') }}" method="POST" class="mt-4">
             <input type="hidden" name="text1" value="{{ text1 }}">
             <input type="hidden" name="text2" value="{{ text2 }}">
             <button type="submit" class="btn btn-info">Find Similarity</button>
         </form>
+        {% endif %}
+
 
         <!-- Palindrome Form -->
         <form id="find-palindrome-form" action="/palindrome" method="POST" class="mt-3">
