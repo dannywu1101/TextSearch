@@ -1,6 +1,10 @@
 // /Static/JS/script.js
 
 const searchInput = document.querySelector('input[name="pattern"]');
+const autoCompleteList = document.createElement('ul');  // Create a dropdown list for auto-complete
+autoCompleteList.classList.add('autocomplete-list');
+searchInput.parentNode.appendChild(autoCompleteList);
+
 const textDisplay1 = document.querySelector('#text1-display p');
 const textDisplay2 = document.querySelector('#text2-display p');
 
@@ -9,18 +13,57 @@ let currentIndex = -1;
 let originalText1 = textDisplay1.innerText;
 let originalText2 = textDisplay2.innerText;
 
-// Real-time search listener
+// Real-time search listener and auto-complete functionality
 searchInput.addEventListener('input', function () {
-    const pattern = searchInput.value;
-    if (pattern.length > 0) {
-        matches = [];  // Reset matches before finding new ones
-        findMatches(textDisplay1, pattern, 'Text1');
-        findMatches(textDisplay2, pattern, 'Text2');
+    const query = searchInput.value;
+    if (query.length > 0) {
+        // Fetch auto-complete suggestions from the server
+        fetch('/autocomplete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'prefix': query
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            displayAutoCompleteSuggestions(data.suggestions);
+        })
+        .catch(error => console.error('Error fetching autocomplete:', error));
+        
+        // Reset matches before finding new ones
+        matches = [];
+        findMatches(textDisplay1, query, 'Text1');
+        findMatches(textDisplay2, query, 'Text2');
     } else {
         resetTextDisplay(textDisplay1, 'Text1');
         resetTextDisplay(textDisplay2, 'Text2');
+        clearAutoCompleteSuggestions();
     }
 });
+
+// Display auto-complete suggestions in the dropdown
+function displayAutoCompleteSuggestions(suggestions) {
+    clearAutoCompleteSuggestions();
+    
+    suggestions.forEach(suggestion => {
+        const listItem = document.createElement('li');
+        listItem.textContent = suggestion;
+        listItem.classList.add('autocomplete-item');
+        listItem.addEventListener('click', function () {
+            searchInput.value = suggestion;
+            clearAutoCompleteSuggestions();
+        });
+        autoCompleteList.appendChild(listItem);
+    });
+}
+
+// Clear the auto-complete suggestions
+function clearAutoCompleteSuggestions() {
+    autoCompleteList.innerHTML = '';
+}
 
 // Reset the text display to the original text
 function resetTextDisplay(textElement, textId) {
@@ -38,6 +81,7 @@ function clearAllHighlights() {
     matches = [];
     currentIndex = -1;
     searchInput.value = '';  // Clear the search input if necessary
+    clearAutoCompleteSuggestions();
 }
 
 // Find all matches in the given text

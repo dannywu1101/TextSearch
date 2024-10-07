@@ -38,6 +38,8 @@ def upload_file():
         file1.save(t1_path)
         with open(t1_path, 'r', encoding='utf-8') as f:
             text1 = f.read()  # Store T1 content
+        global trie1
+        trie1 = load_text_into_trie(text1)  # Load Text1 into Trie
 
     if file2 and allowed_file(file2.filename):
         filename2 = secure_filename(file2.filename)
@@ -45,8 +47,11 @@ def upload_file():
         file2.save(t2_path)
         with open(t2_path, 'r', encoding='utf-8') as f:
             text2 = f.read()  # Store T2 content
+        global trie2
+        trie2 = load_text_into_trie(text2)  # Load Text2 into Trie
     
     return render_template('index.html', text1=text1, text2=text2)
+
 
 # Search pattern using Z-algorithm
 @app.route('/search', methods=['POST'])
@@ -163,7 +168,10 @@ def clear():
 @app.route('/autocomplete', methods=['POST'])
 def autocomplete():
     prefix = request.form.get('prefix')
-    suggestions = trie.search(prefix)
+    # Get suggestions from both tries
+    suggestions_text1 = trie1.search(prefix)
+    suggestions_text2 = trie2.search(prefix)
+    suggestions = list(set(suggestions_text1 + suggestions_text2))  # Combine and remove duplicates
     return jsonify(suggestions=suggestions)
 
 # Helpers
