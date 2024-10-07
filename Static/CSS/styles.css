@@ -40,17 +40,12 @@ body {
     font-family: Arial, sans-serif;
 }
 
-#prev-match, #next-match, #find-palindrome-btn, #clear-all-btn {
+#prev-match, #next-match, #clear-all-btn {
     margin: 10px;
     padding: 5px 10px;
     cursor: pointer;
-    border: 1px solid #ccc;
-    background-color: #f0f0f0;
 }
 
-#prev-match:hover, #next-match:hover, #find-palindrome-btn:hover, #clear-all-btn:hover {
-    background-color: #ddd;
-}
 
 input[type="file"] {
     font-family: Arial, sans-serif;
