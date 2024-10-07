@@ -17,15 +17,15 @@
         <!-- Upload Form -->
         <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data" class="mb-4">
             <div class="form-row justify-content-center mb-3">
-                <div class="col-auto text-center">
-                    <label for="file1" class="d-block">Choose File for Text 1:</label>
-                    <input type="file" class="form-control-file mx-auto" id="file1" name="file1">
+                <div class="col-md-6 text-center">
+                    <label for="file1" class="d-block mb-1">Choose File for Text 1:</label>
+                    <input type="file" class="form-control-file mx-auto" id="file1" name="file1" style="display: block;">
                 </div>
             </div>
             <div class="form-row justify-content-center mb-3">
-                <div class="col-auto text-center">
-                    <label for="file2" class="d-block">Choose File for Text 2:</label>
-                    <input type="file" class="form-control-file mx-auto" id="file2" name="file2">
+                <div class="col-md-6 text-center">
+                    <label for="file2" class="d-block mb-1">Choose File for Text 2:</label>
+                    <input type="file" class="form-control-file mx-auto" id="file2" name="file2" style="display: block;">
                 </div>
             </div>
             <div class="text-center">
